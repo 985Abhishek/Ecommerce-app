@@ -1,5 +1,5 @@
 import {
-    Button,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -28,6 +28,8 @@ const DeleteDialog = ({
             Confirm
           </Button>
         </DialogActions>
+        {/*         jjfdj
+         */}{" "}
       </Dialog>
     </div>
   );
