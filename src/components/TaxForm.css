@@ -1,8 +1,9 @@
 .tax-table {
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
   margin-bottom: 20px;
   height: 100%;
+  
 }
 
 .tax-table th,
@@ -83,8 +84,9 @@
 
 .add-tax-button {
   position: absolute;
-  top: 17%;
-  margin-left: 800px;
+  top: 20%;
+  margin-left: 690px;
+  width:90px;
   margin-top: 1px;
   background-color: #4caf50;
   color: #fff;

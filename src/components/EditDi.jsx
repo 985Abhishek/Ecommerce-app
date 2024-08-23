@@ -5,8 +5,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { Checkbox } from "@mui/material";
+import { toggleEditMode } from "./RandomItemSlice";
 
-const EditDi = ({ open, handleClose, handleSave, formData, handleChange, edit }) => {
+const EditDi = ({ open, handleClose, handleSave, formData, handleChange, editMode, toggleEditMode}) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Edit Details</DialogTitle>
@@ -27,7 +29,25 @@ const EditDi = ({ open, handleClose, handleSave, formData, handleChange, edit })
           value={formData.description}
           onChange={(e) => handleChange("description", e.target.value)}
         />
-        {formData.taxType !== undefined && (
+       
+         
+        <div>
+          <Checkbox
+            checked={formData.taxType === "Fixed"}
+            onChange={(e) => handleChange("taxType", "Fixed")}
+            inputProps={{ "aria-label": "fixed checkbox" }}
+          />
+          <label>Fixed</label>
+
+          <Checkbox
+            checked={formData.taxType === "Percentage"}
+            onChange={(e) => handleChange("taxType", "Percentage")}
+            inputProps={{ "aria-label": "percentage checkbox" }}
+          />
+          <label>Percentage</label>
+        </div>
+
+        {/* {formData.taxType !== undefined && (
           <TextField
             margin="dense"
             label="Tax Type"
@@ -42,13 +62,38 @@ const EditDi = ({ open, handleClose, handleSave, formData, handleChange, edit })
             <option value="Fixed">Fixed</option>
             <option value="Percentage">Percentage</option>
           </TextField>
-        )}
+        )} */}
+       
+        {/* {formData.taxType !== undefined && (
+          <TextField
+            margin="dense"
+            label="Tax Type"
+            select
+            fullWidth
+            value={formData.taxType}
+            onChange={(e) => handleChange("taxType", e.target.value)}
+            SelectProps={{
+              native: true,
+            }}
+          >
+            <option value="Fixed">Fixed</option>
+            <option value="Percentage">Percentage</option>
+          </TextField>
+        )} */}
+         <TextField
+          margin="dense"
+          label="amount"
+          field = "amount"
+          fullWidth
+          value={formData.amount}
+          onChange={(e) => handleChange("amount", e.target.value)}
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button  style ={{backgroundColor:"red", color:"white"}}onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleSave} color="primary">
+        <Button style ={{backgroundColor:"green", color:"white"}} onClick={handleSave} color="primary">
           Save
         </Button>
       </DialogActions>

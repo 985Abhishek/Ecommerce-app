@@ -5,18 +5,27 @@ import { updateField, resetForm } from "../features/taxDataSlice";
 import { loadTaxes, saveTaxes } from "../utils/localSotrage";
 import "./TaxForm.css";
 import EditDi from "./EditDi";
-
 import AddTaxDialog from "./Addtaxdialog";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem, Pagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteDialog from "./DeleteDialog";
+import { calculateAmount, setRandomItems } from "./RandomItemSlice";
+import axios from "axios";
 
 const TaxForm = () => {
   const dispatch = useDispatch();
   const taxes = useSelector((state) => state.tax.taxes);
   const formData = useSelector(
-    (state) => state.form || { name: "", description: "", taxType: "" }
+    (state) =>
+      state.form || {
+        name: "",
+        description: "",
+        amount: "",
+        taxType: "",
+        taxedAmount: "",
+      }
   );
+  const itemList = useSelector((state) => state.randomitemSlice || []);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -24,6 +33,37 @@ const TaxForm = () => {
   const [selectedTaxId, setSelectedTaxId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const recordsPerPage = 10;
+
+   // Calculate total pages
+   const totalPages = Math.ceil(taxes.length / recordsPerPage);
+
+   // Slice the taxes array to show only the records for the current page
+   const paginatedTaxes = taxes.slice(
+     (currentPage - 1) * recordsPerPage,
+     currentPage * recordsPerPage
+   );
+ 
+ 
+
+
+  useEffect(() => {
+    axios
+      .get("https://fakestoreapi.com/products")
+      .then((response) => {
+        const items = response.data.slice(0, 100);
+        const formattedItems = items.map((item) => ({
+          id: item.id,
+          name: item.title,
+          amount: items.price,
+          taxedAmount: "",
+        }));
+        dispatch(setRandomItems(formattedItems));
+      })
+      .catch((error) => console.error(error));
+  }, [dispatch]);
 
   // Open Add Tax Dialog
   const handleOpenAddDialog = () => {
@@ -38,10 +78,13 @@ const TaxForm = () => {
 
   const handleOpenDialog = (tax) => {
     setEditingTax(tax);
-    dispatch(updateField({ field: "name", value: tax.name || "" }));
+    dispatch(
+      updateField({ field: "name", value: tax.name || ""  })
+    );
     dispatch(
       updateField({ field: "description", value: tax.description || "" })
     );
+    dispatch(updateField({ field: "amount", value: tax.amount || "" }));
     dispatch(updateField({ field: "taxType", value: tax.taxType || "" }));
     setDialogOpen(true);
   };
@@ -69,23 +112,22 @@ const TaxForm = () => {
     handleCloseDeleteDialog();
   };
 
-  // const handleSaveChanges = () => {
-  //   if (editingTax) {
-  //     const updateData = {
-  //       editingid = editingid.
-  //     }
-  //     dispatch(editTax({ id: editingTax, updatedData: formData }));
-  //   }
-  //   handleCloseDialog();
-  // };
+
   const handleSaveChanges = () => {
     if (editingTax) {
+      const taxedAmount = handleTaxCaluclation(formData.amount, formData.taxType); // Recalculate taxed amount
+      
       const updatedTax = {
         id: editingTax.id,
-        ...formData,
+        name: formData.name,
+        description: formData.description,
+        amount: formData.amount,
+        taxType: formData.taxType,
+        taxedAmount: taxedAmount, // Assign the recalculated taxed amount
       };
-      dispatch(editTax(updatedTax)); // Dispatch editTax with updated data
-      handleCloseDialog(); // Close the dialog after saving
+  
+      dispatch(editTax(updatedTax));
+      handleCloseDialog();
     }
   };
 
@@ -94,35 +136,47 @@ const TaxForm = () => {
   };
   console.log("formdata", formData);
 
-  // const handleChange = (field, vlaue) => {
-  //   dispatch(updateDialogue);
-  // };
-
-  // const handleAdd = () => {
-  //   formData.name && formData.description;
-
-  //   const newTax = {
-  //     id: Date.now(),
-  //     ...formData,
-  //   };
-  //   dispatch(addTax(newTax));
-  // };
-
   const handleDelete = (id) => {
     dispatch(deleteTax({ id }));
   };
 
   const handleAddTax = () => {
-    if (!formData.name || !formData.description || !formData.taxType) {
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.amount ||
+      !formData.taxType
+    ) {
       alert("All fields must be filled!");
       return;
     }
+    const taxedAmount = handleTaxCaluclation(formData.amount, formData.taxType);
+
     const newTax = {
-      id: Date.now(),
+      id: Date.now(), // Ensure ID is unique
       ...formData,
+      taxedAmount:taxedAmount
     };
-    dispatch(addTax(newTax)); // Add the new tax to Redux state
+
+
+    dispatch(addTax(newTax));
     handleCloseAddDialog();
+  };
+
+  const handleTaxCaluclation = (amount, taxType) => {
+    let taxedAmount = 0;
+    if (taxType === "Percentage") {
+      taxedAmount = parseFloat(amount) + parseFloat(amount) * 0.05; // Assuming 5% tax
+    } else if (taxType === "Fixed") {
+      taxedAmount = parseFloat(amount) + parseFloat(amount) * 0.05; // Assuming a fixed tax of 5 units
+    }
+    
+    return taxedAmount.toFixed(2); 
+   
+  };
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
 
   const handleEdit = (id) => {
@@ -151,6 +205,15 @@ const TaxForm = () => {
     setMenuAnchorEl(null);
     setSelectedTaxId(null);
   };
+
+  
+  const handleToggleEditMode = () => {
+    dispatch(toggleEditMode());
+  };
+
+  const handleToggleDeleteMode = () => {
+    dispatch(toggleDeleteMode());
+  };
   return (
     <div className="form-container">
       <button className="add-tax-button" onClick={handleOpenAddDialog}>
@@ -163,17 +226,24 @@ const TaxForm = () => {
             <th>serial Number</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Amount</th>
             <th>Tax Type</th>
+            <th>Taxed Amount</th>
             <th>Actions</th>
+           
           </tr>
         </thead>
         <tbody>
-          {taxes.map((tax, index) => (
+          {paginatedTaxes.map((tax, index) => (
             <tr key={tax.id}>
-              <td>{index + 1}</td>
+              <td>{ (currentPage -1)* recordsPerPage + index + 1}</td>
               <td>{tax.name}</td>
               <td>{tax.description}</td>
+              <td>{tax.amount}</td>
               <td>{tax.taxType}</td>
+              <td>{tax.taxedAmount}</td> 
+             
+              
               <td>
                 <IconButton onClick={(event) => handleMenuClick(event, tax.id)}>
                   <MoreVertIcon />
@@ -185,70 +255,45 @@ const TaxForm = () => {
                 >
                   <MenuItem
                     onClick={() => {
-                      handleOpenDialog(tax);
                       handleMenuClose();
+                      handleOpenDialog(tax);
                     }}
                   >
                     Edit
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      handleOpenDeleteDialog(tax.id);
                       handleMenuClose();
+                      handleOpenDeleteDialog(tax.id);
                     }}
                   >
                     Delete
                   </MenuItem>
                 </Menu>
               </td>
-              {/* <td>
-                <button
-                  style={{ width: "50%", backgroundColor: "GrayText" }}
-                  onClick={() => handleOpenDialog(tax)}
-                >
-                  Edit
-                </button>{" "}
-                <button
-                  style={{ width: "50%" }}
-                  onClick={() => handleDelete(tax.id)}
-                >
-                  Delete
-                </button>
-              </td> */}
+             
+             
             </tr>
           ))}
         </tbody>
       </table>
+      <Pagination  count={Math.ceil(taxes.length / recordsPerPage)}
+        page={currentPage}
+        onChange={handlePageChange}
+        variant="outlined"
+        shape="rounded"
+        showFirstButton
+        showLastButton />
+
+        
       <AddTaxDialog
         open={addDialogOpen}
         handleClose={handleCloseAddDialog}
         handleSave={handleAddTax}
         formData={formData}
         handleChange={(field, value) => dispatch(updateField({ field, value }))}
+        handleTax={handleTaxCaluclation}
       />
-
-      {/* <div className="form-controls">
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={formData.description}
-          onChange={(e) => handleInputChange("description", e.target.value)}
-        />
-        <select
-          value={formData.taxType || "Fixed"}
-          onChange={(e) => handleInputChange("taxType", e.target.value)}
-        >
-          <option value="">Fixed</option>
-          <option value="Percentage">Percentage</option>
-        </select>
-        <button onClick={handleAdd}>Add Tax</button>
-      </div> */}
 
       <EditDi
         open={dialogOpen}
@@ -258,15 +303,11 @@ const TaxForm = () => {
         handleChange={handleInputChange}
         edit={handleEdit}
       />
-<DeleteDialog
-open ={deleteDialogOpen}
-handleCloseDeleteDialog = {handleCloseDeleteDialog}
-handleConfirmDelete = {handleConfirmDelete}
-
-
-
-></DeleteDialog>
-
+      <DeleteDialog
+        open={deleteDialogOpen}
+        handleCloseDeleteDialog={handleCloseDeleteDialog}
+        handleConfirmDelete={handleConfirmDelete}
+      ></DeleteDialog>
     </div>
   );
 };

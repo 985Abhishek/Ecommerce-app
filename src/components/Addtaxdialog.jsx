@@ -7,7 +7,16 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useDispatch } from "react-redux";
 
-const AddTaxDialog = ({ open, handleClose, handleSave, formData, handleChange }) => {
+const AddTaxDialog = ({ open, handleClose, handleSave,handleChange, formData, handleTax }) => {
+
+  const handleSaveClick = () => {
+    if (formData.amount && formData.taxType) {
+      const id =formData.id || Date.now();
+      handleTax(formData.id, formData.taxType);
+    }
+    handleSave();
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Add New Tax</DialogTitle>
@@ -26,22 +35,31 @@ const AddTaxDialog = ({ open, handleClose, handleSave, formData, handleChange })
           value={formData.description}
           onChange={(e) => handleChange("description", e.target.value)}
         />
+        
         <TextField
           margin="dense"
-          label="Tax Type"
+          label=""
           select
           fullWidth
           value={formData.taxType}
           onChange={(e) => handleChange("taxType", e.target.value)}
           SelectProps={{ native: true }}
+
         >
           <option value="Fixed">Fixed</option>
           <option value="Percentage">Percentage</option>
         </TextField>
+        <TextField
+          margin="dense"
+          label="amount"
+          fullWidth
+          value={formData.amount}
+          onChange={(e) => handleChange("amount", e.target.value)}
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button style ={{color:"white", backgroundColor:"red"}}onClick={handleClose}>Cancel</Button>
+        <Button style ={{color:"white", backgroundColor:"green"}} onClick={handleSaveClick } >Save</Button>
       </DialogActions>
     </Dialog>
   );

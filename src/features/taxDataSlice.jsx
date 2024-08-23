@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createSelector } from "reselect";
 
 const initialState = {
   name: "",
   description: "",
+  amount: "",
   taxType: "",
+  TaxedAmount: ""
 };
 
 export const taxDataSlice = createSlice({
@@ -19,26 +20,13 @@ export const taxDataSlice = createSlice({
       state.name = "";
       state.description = "";
       state.taxType = "";
+      state.amount = "";
     },
   },
 });
 
-// Memoized selector to prevent new references
-// const selectTaxData = (state) => state.tax;
-// export const selectMemoizedTaxData = createSelector(
-//   [selectTaxData],
-//   (taxData) => taxData
-// );
 
-//  const selectMemoizedTaxData = createSelector(
-//   (state) => state.taxData,
-//   (taxData) => ({
-//     name: taxData.name,
-//     description: taxData.description,
-//     taxType: taxData.taxType,
-//   })
-// );
 
 export const { updateField, resetForm } = taxDataSlice.actions;
-// export { selectMemoizedTaxData };
+
 export default taxDataSlice.reducer;
