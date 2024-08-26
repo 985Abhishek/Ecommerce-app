@@ -46,8 +46,6 @@ const TaxForm = () => {
      currentPage * recordsPerPage
    );
  
- 
-
 
   // useEffect(() => {
   //   axios

@@ -40,3 +40,26 @@ export const loadCategories = () => {
     }
   }
   
+  export const loadProducts = ()=>{
+    try{
+      const serializedState = localStorage.getItem('products');
+      if(serializedState === null) {
+        return[]
+      }
+      return JSON.parse(serializedState)
+    }catch (err) {
+      console.log("error in loadproducts")
+      return [];
+    }
+  };
+
+  export const saveProducts = (products) => {
+    try {
+      const serializedState = JSON.stringify(products)
+      localStorage.setItem('products', serializedState)
+    } catch (err) {
+      console.log('error in the saveproducts');
+      
+    }
+  }
+  
