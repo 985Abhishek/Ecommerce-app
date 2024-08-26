@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addTax, deleteTax, editTax, setTaxes } from "../features/taxSlice";
-import { updateField, resetForm } from "../features/taxDataSlice";
-import { loadTaxes, saveTaxes } from "../utils/localSotrage";
+import { addTax, deleteTax, editTax, setTaxes } from "../../store/taxSlice";
+import { updateField, resetForm } from "../../store/taxDataSlice";
+import { loadTaxes, saveTaxes } from "../../utils/localSotrage";
 import "./TaxForm.css";
-import EditDi from "./EditDi";
-import AddTaxDialog from "./Addtaxdialog";
+import EditDi from "../dialogs/EditDi";
+import AddTaxDialog from "../dialogs/Addtaxdialog";
 import { IconButton, Menu, MenuItem, Pagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteDialog from "./DeleteDialog";
-import { calculateAmount, setRandomItems } from "./RandomItemSlice";
+import DeleteDialog from "../dialogs/DeleteDialog";
+import { calculateAmount, setRandomItems, toggleDeleteMode, toggleEditMode } from "../../store/RandomItemSlice";
 import axios from "axios";
 
 const TaxForm = () => {
@@ -49,21 +49,21 @@ const TaxForm = () => {
  
 
 
-  useEffect(() => {
-    axios
-      .get("https://fakestoreapi.com/products")
-      .then((response) => {
-        const items = response.data.slice(0, 100);
-        const formattedItems = items.map((item) => ({
-          id: item.id,
-          name: item.title,
-          amount: items.price,
-          taxedAmount: "",
-        }));
-        dispatch(setRandomItems(formattedItems));
-      })
-      .catch((error) => console.error(error));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   axios
+  //     .get("https://fakestoreapi.com/products")
+  //     .then((response) => {
+  //       const items = response.data.slice(0, 100);
+  //       const formattedItems = items.map((item) => ({
+  //         id: item.id,
+  //         name: item.title,
+  //         amount: items.price,
+  //         taxedAmount: "",
+  //       }));
+  //       dispatch(setRandomItems(formattedItems));
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, [dispatch]);
 
   // Open Add Tax Dialog
   const handleOpenAddDialog = () => {

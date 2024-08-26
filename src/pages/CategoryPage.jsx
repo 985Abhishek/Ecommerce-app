@@ -1,5 +1,5 @@
 import React from "react";
-import CategoryForm from "../components/CategoryForm";
+import CategoryForm from "../components/forms/CategoryForm";
 
 const CategoryPage = () => {
   return (

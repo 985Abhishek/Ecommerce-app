@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import categoryReducer from "../features/categorySlice";
-import taxReducer from "../features/taxSlice";
-import taxDataReducer from "../features/taxDataSlice";
-import dialogReducer from "../features/dialogSlice";
+import categoryReducer from "../store/categorySlice";
+import taxReducer from "../store/taxSlice";
+import taxDataReducer from "../store/taxDataSlice";
+import dialogReducer from "../store/dialogSlice";
 
 export const store = configureStore({
   reducer: {

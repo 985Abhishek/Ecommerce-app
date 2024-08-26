@@ -5,9 +5,9 @@ import {
   deleteCategory,
   editCategory,
   setCategories,
-} from "../features/categorySlice";
-import { loadCategories, saveCategories } from "../utils/localSotrage";
-import "./CategoryForm.css";
+} from "../../store/categorySlice";
+import { loadCategories, saveCategories } from "../../utils/localSotrage";
+import "../forms/categoryform.css"
 
 const CategoryForm = () => {
   const dispatch = useDispatch();
