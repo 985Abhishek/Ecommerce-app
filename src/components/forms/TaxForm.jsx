@@ -47,22 +47,6 @@ const TaxForm = () => {
    );
  
 
-  // useEffect(() => {
-  //   axios
-  //     .get("https://fakestoreapi.com/products")
-  //     .then((response) => {
-  //       const items = response.data.slice(0, 100);
-  //       const formattedItems = items.map((item) => ({
-  //         id: item.id,
-  //         name: item.title,
-  //         amount: items.price,
-  //         taxedAmount: "",
-  //       }));
-  //       dispatch(setRandomItems(formattedItems));
-  //     })
-  //     .catch((error) => console.error(error));
-  // }, [dispatch]);
-
   // Open Add Tax Dialog
   const handleOpenAddDialog = () => {
     dispatch(resetForm());

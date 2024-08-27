@@ -1,42 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  name: "",
-  description: "",
-  proudct: {
-    id: "",
-  },
-  stockquantity: "",
-  price: "",
-  category: {
-    id: "",
-  },
-  tax: {
-    id: "",
-  },
+  name: '',
+  description: '',
+  productId: '',
+  stockQuantity: '',
+  price: '',
+  category: [], // For multi-select, storing selected categories
+  tax: [], // For multi-select, storing selected taxes
 };
 
-export const productDataSlice = createSlice({
-  name: "productData",
+const productDataSlice = createSlice({
+  name: 'productForm',
   initialState,
   reducers: {
-    updateProductField: (state, action) => {
+    updateField: (state, action) => {
       const { field, value } = action.payload;
       state[field] = value;
     },
-    resetProductForm: (state, action) => {
-      state.name = "";
-      state.description = "";
-      state.proudct.id = "";
-      state.stockquantity = "";
-      state.price = "";
-      state.category.id = "";
-      state.tax.id = "";
+    resetForm: (state) => {
+      // Reset the form back to initial state
+      return initialState;
+    },
+    setCategory: (state, action) => {
+      state.category = action.payload;
+    },
+    setTax: (state, action) => {
+      state.tax = action.payload;
     },
   },
 });
 
-export const { updateProductField, resetProductForm } =
-  productDataSlice.actions;
+export const { updateField, resetForm, setCategory, setTax } = productDataSlice.actions;
 
 export default productDataSlice.reducer;

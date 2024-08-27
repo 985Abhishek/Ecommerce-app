@@ -1,33 +1,28 @@
-import React from 'react'
+import React from "react";
 import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-  } from "@mui/material";
-  
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+} from "@mui/material";
 
-const Deleteproductdialog = ({open, handlecloseProductDeleteDialog,handleConfirmProductDelete}) => {
+const DeleteDialog = ({ open, handleCloseDeleteDialog, handleConfirmDelete }) => {
   return (
-    <div>
-        <Dialog open={open} onClose={handlecloseProductDeleteDialog}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this Product?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button style ={{color:"white", backgroundColor:"red"}} onClick={handlecloseProductDeleteDialog}>Cancel</Button>
-          <Button style ={{color:"white", backgroundColor:"green"}} onClick={handleConfirmProductDelete} color="error">
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
-}
+    <Dialog open={open} onClose={handleCloseDeleteDialog} fullWidth>
+      <DialogTitle>Confirm Delete</DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete this item?</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+        <Button onClick={handleConfirmDelete} color="secondary">
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
-export default Deleteproductdialog
+export default DeleteDialog;

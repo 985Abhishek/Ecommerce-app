@@ -1,9 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+
+const initialState = {
+  taxes: [],
+  status: "idle", // idle | loading | succeeded | failed
+  error: null,
+};
+
+// Async thunk to fetch taxes from an API
+export const fetchTaxes = createAsyncThunk(
+  "tax/fetchTaxes",
+  async () => {
+    const location = useLocation();
+    const url =`${location.pathname}/api/taxes`
+    const response = await axios.get(url); // Replace with your API endpoint
+    return response.data;
+  }
+);
 
 export const taxSlice = createSlice({
   name: "tax",
-  initialState: { taxes: [] },
-
+  initialState,
   reducers: {
     addTax: (state, action) => {
       state.taxes.push(action.payload);
@@ -21,6 +39,20 @@ export const taxSlice = createSlice({
     setTaxes: (state, action) => {
       state.taxes = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTaxes.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchTaxes.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.taxes = action.payload;
+      })
+      .addCase(fetchTaxes.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
   },
 });
 

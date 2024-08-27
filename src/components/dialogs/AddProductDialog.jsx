@@ -6,15 +6,17 @@ import {
   DialogActions,
   Button,
   TextField,
-  Chip,
-  Select,
+  Checkbox,
+  FormControlLabel,
   MenuItem,
+  Select,
   InputLabel,
   FormControl,
   OutlinedInput,
+  Chip,
 } from "@mui/material";
 
-const EditProductDialog = ({
+const AddProductDialog = ({
   open,
   handleClose,
   handleSave,
@@ -25,54 +27,51 @@ const EditProductDialog = ({
 }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
-      <DialogTitle>Edit Product</DialogTitle>
+      <DialogTitle>Add Product</DialogTitle>
       <DialogContent>
         <TextField
           label="Name"
-          value={formData.name}
+          value={formData.name ? "Required" : ""}
           onChange={(e) => handleChange("name", e.target.value)}
           fullWidth
           margin="dense"
+          error={formData.name === "" ? "Required" : ""}
+          helperText={formData.name === "" ? "Required" : ""}
         />
         <TextField
           label="Description"
-          value={formData.description}
+          value={formData.description }
           onChange={(e) => handleChange("description", e.target.value)}
           fullWidth
           margin="dense"
         />
+     
         <TextField
-          label="Product ID"
-          value={formData.productId}
-          onChange={(e) => handleChange("productId", e.target.value)}
-          fullWidth
-          margin="dense"
-        />
-        <TextField
-          label="Stack Quantity"
-          value={formData.stackQuantity}
-          onChange={(e) => handleChange("stackQuantity", e.target.value)}
+          label="Stock Quantity"
+          value={formData.stockQuantity ? "Required" : ""}
+          onChange={(e) => handleChange("stockQuantity", e.target.value)}
           fullWidth
           margin="dense"
         />
         <TextField
           label="Price"
-          value={formData.price}
+          value={formData.price ? "Required" : ""}
           onChange={(e) => handleChange("price", e.target.value)}
           fullWidth
           margin="dense"
         />
-        <FormControl fullWidth margin="dense">
+        <FormControl fullWidth  style={{ marginBottom: 96 }}>
           <InputLabel>Category</InputLabel>
           <Select
             multiple
-            value={formData.category}
+            value={formData.category? "Required" : ""}
+            margin = "dense"
             onChange={(e) => handleChange("category", e.target.value)}
             input={<OutlinedInput label="Category" />}
             renderValue={(selected) => (
               <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {selected.map((value) => (
-                  <Chip key={value} label={value} style={{ margin: 2 }} />
+                  <Chip key={value} label={value} style={{ margin: 32 }} />
                 ))}
               </div>
             )}
@@ -84,17 +83,18 @@ const EditProductDialog = ({
             ))}
           </Select>
         </FormControl>
-        <FormControl fullWidth margin="dense">
+        <FormControl fullWidth  style={{ marginBottom: 16 }}>
           <InputLabel>Tax</InputLabel>
           <Select
             multiple
-            value={formData.tax}
+            value={formData.tax ? "Required" : ""}
+            margin = "dense"
             onChange={(e) => handleChange("tax", e.target.value)}
             input={<OutlinedInput label="Tax" />}
             renderValue={(selected) => (
               <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {selected.map((value) => (
-                  <Chip key={value} label={value} style={{ margin: 2 }} />
+                  <Chip key={value} label={value} style={{ margin: 32 }} />
                 ))}
               </div>
             )}
@@ -117,4 +117,4 @@ const EditProductDialog = ({
   );
 };
 
-export default EditProductDialog;
+export default AddProductDialog;

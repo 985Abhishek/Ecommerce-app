@@ -1,269 +1,317 @@
-import { useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { resetProductForm, updateProductField } from '../../store/productDataSlice';
-import { addProduct, editproduct, setproducts } from '../../store/productSlice';
-import { IconButton, Menu, MenuItem, Pagination } from '@mui/material';
-import AddProductsdialog from '../dialogs/AddProductsdialog';
-import EditProductDialog from '../dialogs/EditProductDialog';
-import Deleteproductdialog from '../dialogs/Deleteproductdialog';
-import { loadProducts, saveProducts } from '../../utils/localSotrage';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "../../store/categorySlice";
+import { fetchTaxes } from "../../store/taxSlice";
+import { addProduct, deleteProduct, editProduct, setProduct } from "../../store/productSlice";
+import { Button, MenuItem, Select, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { loadProducts, saveProducts } from "../../utils/localSotrage";
+import "./ProductForm.css";
+import toast, { Toaster } from "react-hot-toast";
+// import toast from 'react-toastify'
 
 const ProductForm = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product?.products ||  []);
-
-
-  console.log("products",products)
+  const categories = useSelector((state) => state.category.categories);
+  console.log("",categories);
   
+  const taxes = useSelector((state) => state.tax.taxes);
+  console.log("taxes",  taxes);
+
   
-  const productData = useSelector((state) => state.productData || {
-    name: '',
-    description: '',
-    product: '',
-    stockquantity: '',
-    price: '',
-    category: '',
-    tax:'',
+  const products = useSelector((state) => state.product.products);
+  console.log('categories---',categories)
+
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    stockQuantity: "",
+    price: "",
+    category: [],
+    tax: [],
   });
-  const [currentProductPage, setcurrentProductPage]= useState(1)
-  const [addProductDiologOpen, setAddProductDialogOpen] = useState(false)
-  const [editingproduct, seteditingproduct] = useState(null);
-  const [editingDialogopen,seteditingDialogopen ] = useState(false)
-  const [deleteProductDialogOpen, setDeleteProductDialogOpen] = useState(false);
-  const [selectedProductId, setselectedProductId]=useState(null)
-  const [menuProductAnchorEl, setmenuProductAnchorEl] = useState(false)
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editingTax, setEditingTax] = useState(null);
+  const [selectedTaxId, setSelectedTaxId] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [multiSelectOpen, setMultiSelectOpen] = useState(false);
 
   const recordsPerPage = 10;
-  
-   const totalProducts = Math.ceil(products.length /recordsPerPage);
 
-   const paginatedProducts = products.slice((currentProductPage-1)* recordsPerPage, currentProductPage * recordsPerPage);
+  const totalPages = Math.ceil(taxes.length / recordsPerPage);
 
-   //to open add product dialog box
- const handleOpenAddProductDialog = ()=>{
-  dispatch(resetProductForm());
-  setAddProductDialogOpen(true);
- };
+  // Slice the taxes array to show only the records for the current page
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * recordsPerPage,
+    currentPage * recordsPerPage
+  );
 
- const handleCloseAddProductDialog = ()=>{
-setAddProductDialogOpen(false);
-dispatch(resetProductForm());
- };
-//to open and close editing dialog box
- const handleOpenEditingProductDialog = (product)=>{
-  seteditingproduct(product);
-dispatch(updateProductField({field : "name", value: product.name || ""}))
-dispatch(updateProductField({field : "description", value: product.description || ""}))
-dispatch(updateProductField({field : "productid", value: product.product.id || ""}))
-dispatch(updateProductField({field : "stock quantity", value: product.stockquantity || ""}))
-dispatch(updateProductField({field : "category", value: product.category.id || ""}))
-dispatch(updateProductField({field : "tax", value: product.tax.id || ""}))
- };
+  useEffect(()=>{
+const storedProducts = loadProducts();
+if(storedProducts.length > 0) {
+dispatch(setProduct(storedProducts))
+}
+ },[dispatch]);
 
- const handleCloseEditingProductDialog = ()=>{
-  seteditingproduct(null);
-  seteditingDialogopen(false);
-  dispatch(resetProductForm())
- };
-// to handle delete dialog
- const handleOpenProductDeleteDialog = (id)=>{
-  setselectedProductId(id);
-  setDeleteDialogOpen(true);
- }
-
- const  handleCloseProductDeleteDialog = ()=>{
-  setDeleteProductDialogOpen(false);
-  setselectedProductId(null);
- }
-
- const handleConfirmProductDelete =()=>{
-dispatch(deleteproduct({id: selectedProductId}));
-handleCloseProductDeleteDialog()
- }
-
- const handleProductSaveChanges = ()=> {
-  if(editingproduct) {
-    const  updatedProduct = {
-      id: editingproduct.product.id,
-      name: editingproduct.name,
-      description: editingproduct.description,
-      product: editingproduct.product,
-      stockquantity: editingproduct.stockquantity,
-      price: editingproduct.price,
-      category: editingproduct.category,
-      tax: editingproduct.tax,
-    };
-    dispatch(editproduct(updatedProduct));
-    handleCloseEditingProductDialog();
-
-  }
- }
-
- const handleInputProductChange = (field, value) => {
-  dispatch(updateProductField({ field, value }))
- }
- const handleProductDelete = (id) => {
-  dispatch(deleteProduct(id));
- }
-
- const handleAddProduct =() =>{
-  if( 
-    ! productData.name ||
-    ! productData.description ||
-    ! productData.productid ||
-    ! productData.stockquantity ||
-    ! productData.category ||
-    ! productData.tax
-  ) {
-    alert("All fields must be filled");
-    return;
-
-    const newProduct ={
-      id:Date.now(),
-      ...productData,
-
-    }
-    dispatch(addProduct(newProduct))
-    handleCloseAddProductDialog
-  }
- }
-
- const handleproductPageChange = (event, value)=>{
-  setcurrentProductPage(value);
- }
-
- const handleproductEdit = (id) =>{
-  const updatedProduct = {...productData };
-  dispatch(editproduct({id, updatedProduct}));
- };
- // ---------------------------LOCALSOTRAGE CODE -------------------------------
- useEffect(() => {
-  const storedProducts = loadProducts();
-  if (storedProducts.length > 0) {
-    dispatch(setproducts(storedProducts));
-  }
-}, [dispatch]);
-
-useEffect(() => {
+ useEffect(()=> {
   saveProducts(products);
-}, [products]);
- 
- // MENU HANDLER FOR THREE DOTS
- const handleProductMenuClick = (event, id) => {
-setmenuProductAnchorEl(event.currentTarget);
-setselectedProductId(id);
- };
+ },[products]);
 
- const handleproductMenuClose =()=> {
-setmenuProductAnchorEl(null);
-setselectedProductId(null);
- }
- 
- const handleProductMenuClose =()=>{
-  dispatch(toggle)
+  
 
- }
+  useEffect(() => {
+    dispatch(fetchCategories());
+    dispatch(fetchTaxes());
+  }, [dispatch]);
+
+  const handleOpenAddDialog = () => {
+    dispatch(resetForm());
+    setAddDialogOpen(true);
+  };
+
+  const handleCloseAddDialog = () => {
+    setAddDialogOpen(false);
+    dispatch(resetForm());
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProductData({ ...productData, [name]: value });
+  };
+
+  const handleCategoryChange = (event) => {
+    setProductData({ ...productData, category: event.target.value });
+  };
+
+  const handleSaveProduct = () => {
+    console.log("hhhhh---");
+    
+    if (!productData.name || !productData.stockQuantity || !productData.price || !productData.category || !productData.tax) {
+      toast.error("Please fill in all required fields (Name, Stock Quantity, Price, Category, and Tax)"),{
+        position: toast.POSITION.TOP_RIGHT,
+      }
+      
+    }
+    else if (editingProduct) {
+      dispatch(editProduct({ ...productData, id: editingProduct.id }));
+    } else  {
+      dispatch(addProduct({ ...productData, id: Date.now() }));
+    }
+    handleCloseDialog();
+    toast.success("Product saved successfully!");
+  };
+
+  const handleOpenDialog = (product) => {
+    setEditingProduct(product);
+    setProductData({
+      name: product?.name || "",
+      description: product?.description || "",
+      stockQuantity: product?.stockQuantity || "",
+      price: product?.price || "",
+      category: product?.category || [],
+      tax: product?.tax || [],
+    });
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setEditingProduct(null);
+    setProductData({
+      name: "",
+      description: "",
+      productId: "",
+      stockQuantity: "",
+      price: "",
+      category: [],
+      tax: [],
+    });
+  };
+
+  const handleDeleteProduct = (id) => {
+    dispatch(deleteProduct(id));
+    toast.success("Product deleted successfully!");
+  };
+
+  const handleMenuClick = (event, id) => {
+    setMenuAnchorEl(event.currentTarget);
+    setSelectedProductId(id);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+    setSelectedProductId(null);
+  };
+
+  
+  const handleToggleEditMode = () => {
+    dispatch(toggleEditMode());
+  };
+
+  const handleToggleDeleteMode = () => {
+    dispatch(toggleDeleteMode());
+  };
+
+  const handleTaxChange = (taxValues) => {
+    setProductData({ ...productData, tax: taxValues });
+  }
+  
   return (
-    <div>
-       <button className="add-tax-button" onClick={handleOpenAddProductDialog}>
+    <div className = "form-container">
+    <Toaster
+  position="top-center"
+  reverseOrder={false}
+/>
+      <Button variant="contained" color="primary" onClick={() => handleOpenDialog(null)}>
         Add Product
-      </button>
+      </Button>
+
       <table className="tax-table">
         <thead>
           <tr>
-            <th>serial Number</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Product Id</th>
             <th>Stock Quantity</th>
             <th>Price</th>
             <th>Category</th>
             <th>Tax</th>
-           
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedProducts.map((product, index) => (
-            <tr key={tax.id}>
-              <td>{ (currentPage -1)* recordsPerPage + index + 1}</td>
-              <td>{products.name}</td>
-              <td>{products.description}</td>
-              <td>{products.Product}</td>
-              <td>{products.stockquantity}</td>
-              <td>{products.Price}</td> 
-              <td>{products.Category}</td> 
-              <td>{products.Tax}</td> 
-
+          {products.map((product) => (
+            <tr key={product.id}>
+              <td>{product.name}</td>
+              <td>{product.description}</td>
+              <td>{product.stockQuantity}</td>
+              <td>{product.price}</td>
+              <td>{product.category.join(", ")}</td>
+              <td>{product.tax.join(", ")}</td>
               <td>
-                <IconButton onClick={(event) => handleProductMenuClick(event, product.id)}>
-                  <MoreVertIcon />
-                </IconButton>
-                <Menu
-                  anchorEl={menuProductAnchorEl}
-                  open={Boolean(menuProductAnchorEl) && selectedProductId === product.id}
-                  onClose={handleProductMenuClose}
-                >
-                  <MenuItem
-                    onClick={() => {
-                      handleProductMenuClose();
-                      handleOpenEditingProductDialog(tax);
-                    }}
-                  >
-                    Edit
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleProductMenuClose();
-                      handleOpenProductDeleteDialog(product.id);
-                    }}
-                  >
-                    Delete
-                  </MenuItem>
-                </Menu>
+                <Button onClick={() => handleOpenDialog(product)}>Edit</Button>
+                <Button onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
+              
               </td>
-              </tr>
+            </tr>
           ))}
         </tbody>
       </table>
-      <Pagination  count={Math.ceil(products.length / recordsPerPage)}
-        page={currentProductPage}
-        onChange={handleproductPageChange}
-        variant="outlined"
-        shape="rounded"
-        showFirstButton
-        showLastButton />
-        
-        <AddProductsdialog>
-        open={addProductDiologOpen}
-        handleProductClose={handleCloseAddProductDialog}
-        handleProductSave={handleAddProduct}
-        productData ={productData}
-        handleProductChange={(field, value) => dispatch(updateProductField({ field, value }))}
-        {/* handleProduct={handleTaxCaluclation} */}
-        </AddProductsdialog>
 
-        <EditProductDialog>
-        open={addProductDiologOpen}
-        handleProductClose={handleCloseAddProductDialog}
-        handleProductSave={handleProductSaveChanges}
-        product={products}
-        handleProductChange={handleInputProductChange}
-        edit={handleproductEdit}
-        </EditProductDialog>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>{editingProduct ? "Edit Product" : "Add Product"}</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            name="name"
+            label="Product Name"
+            fullWidth
+            value={productData.name}
+            onChange={handleInputChange}
+            required
+          />
+          <TextField
+            margin="dense"
+            name="description"
+            label="Description"
+            fullWidth
+            value={productData.description}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            name="stockQuantity"
+            label="Stock Quantity"
+            fullWidth
+            value={productData.stockQuantity}
+            onChange={handleInputChange}
+            required
+          />
+          <TextField
+            margin="dense"
+            name="price"
+            label="Price"
+            fullWidth
+            value={productData.price}
+            onChange={handleInputChange}
+            required
+          />
 
-<Deleteproductdialog>
-open={deleteProductDialogOpen}
-        handleCloseProductDeleteDialog={handleCloseProductDeleteDialog}
-        handleConfirmProductDelete={handleConfirmProductDelete}
-</Deleteproductdialog>
-             
+          <Select
+            multiple
+            value={productData.category}
+            onChange={(event) => { 
+              handleCategoryChange(event)
+            //  setMultiSelectOpen(false)
+            }}
+            // open = {multiSelectOpen}
+            // onOpen={()=>setMultiSelectOpen(true)}
+            // onClose={()=>setMultiSelectOpen(false)}
+            fullWidth
+            displayEmpty
+            renderValue={(selected) =>
+              selected.length === 0 ? "Select Categories" : selected.join(", ")
               
-              
+            }
+            required
+          >
+            {/* {categories.map((category) => (
+              <MenuItem key={category.id} value={category.name}>
+                {category.name}
+              </MenuItem>
+            ))} */}
+            {products && Array.isArray(products) ? (
+  categories.map((category) => (
+    <MenuItem key={category.id} value={category.name}>
+      {category.name}
+    </MenuItem>
+  ))
+) : (
+  <MenuItem disabled>No categories available</MenuItem>
+)}
+          </Select>
+
+          <Select
+            multiple
+            value={productData.tax}
+            onChange={ (event)=>{handleTaxChange(event.target.value)
+              setMultiSelectOpen(false)
+            }}
+            
+            fullWidth
+            displayEmpty
+            renderValue={(selected) =>
+              selected.length === 0 ? "Select Taxes" : selected.join(", ")
+            }
+            required
+          >
+           
+       {taxes && Array.isArray(taxes) ? (
+  taxes.map((tax) => (
+    <MenuItem key={tax.id} value={tax.name}>
+      {tax.name}
+    </MenuItem>
+  ))
+) : (
+  <MenuItem disabled>No taxes available</MenuItem>
+)}
+
+
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleSaveProduct} color="primary">
+            {editingProduct ? "Save Changes" : "Add Product"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
-  )
-}
+  );
+};
 
+export default ProductForm;
 
-
-export default ProductForm
