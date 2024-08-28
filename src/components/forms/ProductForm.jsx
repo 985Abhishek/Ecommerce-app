@@ -6,8 +6,11 @@ import { addProduct, deleteProduct, editProduct, setProduct } from "../../store/
 import { Button, MenuItem, Select, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { loadProducts, saveProducts } from "../../utils/localSotrage";
 import "./ProductForm.css";
-import toast, { Toaster } from "react-hot-toast";
-// import toast from 'react-toastify'
+import { Bounce, toast } from "react-toastify";
+import  "react-toastify/dist/ReactToastify.css";
+
+
+
 
 const ProductForm = () => {
   const dispatch = useDispatch();
@@ -91,9 +94,17 @@ dispatch(setProduct(storedProducts))
     console.log("hhhhh---");
     
     if (!productData.name || !productData.stockQuantity || !productData.price || !productData.category || !productData.tax) {
-      toast.error("Please fill in all required fields (Name, Stock Quantity, Price, Category, and Tax)"),{
-        position: toast.POSITION.TOP_RIGHT,
-      }
+      toast.error("Please fill in all required fields ",{
+          position:"top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+      });
       
     }
     else if (editingProduct) {
@@ -102,7 +113,7 @@ dispatch(setProduct(storedProducts))
       dispatch(addProduct({ ...productData, id: Date.now() }));
     }
     handleCloseDialog();
-    toast.success("Product saved successfully!");
+   // toast.success("Product saved successfully!");
   };
 
   const handleOpenDialog = (product) => {
@@ -162,10 +173,10 @@ dispatch(setProduct(storedProducts))
   
   return (
     <div className = "form-container">
-    <Toaster
+    {/* <Toaster
   position="top-center"
   reverseOrder={false}
-/>
+/> */}
       <Button variant="contained" color="primary" onClick={() => handleOpenDialog(null)}>
         Add Product
       </Button>

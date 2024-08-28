@@ -31,6 +31,8 @@ import taxDataReducer from "../store/taxDataSlice";
 import dialogReducer from "../store/dialogSlice";
 import productReducer from "../store/productSlice";
 import productDataReducer from "../store/productDataSlice";
+import apiDataReducer from "../store/apiDataSlice";
+import salesDataReducer from "../store/salesDataSlice";
 
 export const store = configureStore({
   reducer: {
@@ -41,6 +43,8 @@ export const store = configureStore({
     product: productReducer,
     productData: productDataReducer,
     // fetchTaxes : fetchTaxes
+    apiData : apiDataReducer,
+    salesData: salesDataReducer,
   },
 });
 

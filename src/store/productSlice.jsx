@@ -4,6 +4,7 @@ const initialState = {
   products: [],
 };
 
+
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -30,5 +31,18 @@ const productSlice = createSlice({
 });
 
 export const { addProduct, editProduct, deleteProduct, setProduct } = productSlice.actions;
+
+//fetchproducts method to get products value 
+
+export const fetchproducts = () => async (dispatch) => {
+try {
+  const response = await fetch('/products')
+  console.log('response response ----',response )
+  // dispatch(setProduct(response.data))
+  return response
+} catch (error) {
+  console.error("failed to fetch products: ", error )
+}
+};
 
 export default productSlice.reducer;

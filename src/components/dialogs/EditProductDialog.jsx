@@ -109,7 +109,8 @@ const EditProductDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSave} color="primary">
+        <Button onClick={handleSave}  color="primary">
+
           Save
         </Button>
       </DialogActions>
