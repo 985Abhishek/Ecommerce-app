@@ -26,13 +26,15 @@
 // store.js
 import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "../store/categorySlice";
-import  taxReducer from "../store/taxSlice";
+import taxReducer from "../store/taxSlice";
 import taxDataReducer from "../store/taxDataSlice";
 import dialogReducer from "../store/dialogSlice";
 import productReducer from "../store/productSlice";
 import productDataReducer from "../store/productDataSlice";
 import apiDataReducer from "../store/apiDataSlice";
-import salesDataReducer from "../store/salesDataSlice";
+import salesSliceReducer from "../store/salesDataSlice";
+import selectionSliceReducer from "../store/selectionSlice";
+import { thunk } from "redux-thunk";
 
 export const store = configureStore({
   reducer: {
@@ -43,8 +45,10 @@ export const store = configureStore({
     product: productReducer,
     productData: productDataReducer,
     // fetchTaxes : fetchTaxes
-    apiData : apiDataReducer,
-    salesData: salesDataReducer,
+    apiData: apiDataReducer,
+    sales: salesSliceReducer,
+    select: selectionSliceReducer,
+    middleWare: [thunk],
   },
 });
 

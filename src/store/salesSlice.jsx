@@ -1,34 +1,35 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  sales: [],
-
+  tableData: [],
 };
 
 export const salesSlice = createSlice({
-  name: "sale",
+  name: "sales",
   initialState,
   reducers: {
-    addSales: (state, action) => {
-      state.taxes.push(action.payload);
+    setInitialData: (state, action)=>{
+state.tableData =[action.payload]
     },
-    deleteSales: (state, action) => {
-      state.taxes = state.taxes.filter((tax) => tax.id !== action.payload.id);
-    },
-    editSales: (state, action) => {
-      const { id } = action.payload;
-      const index = state.taxes.findIndex((tax) => tax.id === id);
-      if (index !== -1) {
-        state.taxes[index] = action.payload;
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const item = state.tableData.find((item) => item.id === id);
+      if (item) {
+        item.quantity = quantity;
+        item.totalTax = item.price * quantity * 0.05; 
+        item.totalPrice = item.price * quantity + item.totalTax;
+      } else {
+        state.tableData.push(action.payload);
       }
     },
-    setSales: (state, action) => {
-      state.taxes = action.payload;
+    calculateTotals: (state) => {
+      state.tableData.forEach((item) => {
+        state.totalTax = state.tableData.reduce((acc, item) => acc + item.totalTax, 0);
+        state.totalPrice = state.tableData.reduce((acc, item) => acc + item.totalPrice, 0);
+      });
     },
   },
 });
 
-export const { addSales, deleteSales, editSales, setSales } = salesSlice.actions;
+export const {setInitialData, updateQuantity, calculateTotals } = salesSlice.actions;
 export default salesSlice.reducer;

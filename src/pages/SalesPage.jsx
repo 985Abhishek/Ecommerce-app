@@ -11,7 +11,7 @@ const SalesPage = () => {
   // Access data from your localStorage (apiData slice)
   const { data = [], status = 'idle', error = null } = useSelector((state) => state.apiData || {});
 
-  const [selectedProduct, setSelectedProduct] = useState();
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Fetch data from localStorage when the status is 'idle'
   useEffect(() => {
@@ -23,8 +23,8 @@ const SalesPage = () => {
   // Handle product selection from dropdown
   const handleProductSelect = (e) => {
     const productId = e.target.value;
-    const selectedProduct = data.find((product) => product.id === productId);
-    setSelectedProduct(selectedProduct);
+    const product = data.find((product) => product.id === productId);
+    setSelectedProduct(product);
   };
 
   let content;
@@ -53,14 +53,15 @@ const SalesPage = () => {
             </MenuItem>
           ))}
         </Select>
-        {selectedProduct && <SalesForm selectedProduct={selectedProduct} />}
       </FormControl>
 
-      {/* Displaying status content if necessary */}
-      {content}
+      {selectedProduct ? (
+        <SalesForm selectedProduct={selectedProduct} />
+      ) : (
+        <p>Please select a product to view details.</p>
+      )}
     </div>
   );
 };
 
 export default SalesPage;
-

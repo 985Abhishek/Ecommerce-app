@@ -4,17 +4,17 @@ import { useLocation } from "react-router-dom";
 
 const initialState = {
   categories: [],
-  status: "idle", // idle | loading | succeeded | failed
+  status: "idle", 
   error: null,
 };
 
-// Async thunk to fetch categories from an API
+
 export const fetchCategories = createAsyncThunk(
   "category/fetchCategories",
   async () => {
     const location = useLocation();
     const url =`${location.pathname}/api/categories`
-    const response = await axios.get(url); // Replace with your API endpoint
+    const response = await axios.get(url); 
     return response.data;
   }
 );

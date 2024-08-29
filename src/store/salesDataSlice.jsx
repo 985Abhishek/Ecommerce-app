@@ -1,32 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  tableData: {
-    name: "",
-    price: 0,
-    quantity: 1, // Default quantity is 1
-    totalTax: 0,
-    totalPrice: 0,
-  },
+  tableData: [],  
+  totalTax: 0,
+  totalPrice:0,
 };
 
-const salesDataSlice = createSlice({
+export const salesDataSlice = createSlice({
   name: "salesData",
   initialState,
   reducers: {
-    updateField: (state, action) => {
-      const { field, value } = action.payload;
-      state.tableData[field] = value;
-      if (field === "quantity") {
-        state.tableData.totalTax = state.tableData.price * value * 0.05; // Recalculate total tax assuming 5% tax
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const itemIndex = state.tableData.findIndex((item) => item.id === id);
+      if (itemIndex !== -1) {
+        const item = state.tableData[itemIndex];
+        item.quantity = quantity;
+        item.totalTax = item.tax * quantity;  
+        item.totalPrice = item.price * quantity + item.totalTax;  
+      } else {
+        state.tableData.push(action.payload);
       }
-      state.tableData.totalPrice = state.tableData.price + state.tableData.totalTax;
     },
-    resetForm: (state) => {
-      state.tableData = initialState.tableData;
+    calculateTotals: (state) => {
+      state.totalTax = state.tableData.reduce((acc, item) => acc + item.totalTax, 0);
+      state.totalPrice = state.tableData.reduce((acc, item) => acc + item.totalPrice, 0);
     },
   },
 });
 
-export const { updateField, resetForm } = salesDataSlice.actions;
+export const { updateQuantity, calculateTotals } = salesDataSlice.actions;
 export default salesDataSlice.reducer;

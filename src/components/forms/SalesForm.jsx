@@ -1,68 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { updateField } from "../../store/salesDataSlice";
-import { Button } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuantity, calculateTotals } from "../../store/salesSlice";
+import "./SalesForm.css";
+import { loadSales, saveSales } from "../../utils/localSotrage";
 
-const SalesForm = () => {
+const SalesForm = ({ selectedProduct }) => {
   const dispatch = useDispatch();
-  const tableData = useSelector((state) => state.salesData.tableData || []);
-  const [selectedProduct, setSelectedProduct] =  useState(null);
+ const tableData = useSelector((state) => state.sales.tableData);
+
+  const [productData, setProductData] = useState({
+    id: selectedProduct?.id || "",
+    name: selectedProduct?.name || "",
+    quantity: 1,
+    amount: selectedProduct?.Amount || 100,
+    tax: (selectedProduct?.Amount || 100) * 0.05,
+    totalPrice: (selectedProduct?.Amount || 100) + (selectedProduct?.Amount || 0) * 0.05,
+  });
+
+
   useEffect(() => {
     if (selectedProduct) {
-      dispatch(updateField({ field: "name", value: selectedProduct.name }));
-      dispatch(updateField({ field: "price", value: selectedProduct.price }));
-      dispatch(updateField({ field: "totalTax", value: selectedProduct.price * 0.05 })); // Assuming 5% tax
-      dispatch(updateField({ field: "totalPrice", value: selectedProduct.price + selectedProduct.price * 0.05 }));
-    } else {
-      dispatch(resetForm());
+      const initialData = {
+        id: selectedProduct.id,
+        name: selectedProduct.name,
+        quantity: 1,
+        amount: selectedProduct.Amount || 100,
+        tax: (selectedProduct.Amount || 100) * 0.05,
+        totalPrice: (selectedProduct.Amount || 100) + (selectedProduct.Amount || 0) * 0.05,
+      };
+
+      setProductData(initialData);
+      dispatch(updateQuantity(initialData));
+      dispatch(calculateTotals());
     }
   }, [selectedProduct, dispatch]);
-  const handleProductSelect = (product) => {
-    setSelectedProduct(product);
+
+  const handleQuantityChange = (id, newQuantity) => {
+    const updatedData = {
+      ...productData,
+      quantity: newQuantity,
+      tax: productData.amount * 0.05 * newQuantity,
+      totalPrice: productData.amount * newQuantity + productData.amount * 0.05 * newQuantity,
+    };
+
+    setProductData(updatedData);
+    dispatch(updateQuantity(updatedData));
+    dispatch(calculateTotals());
   };
 
-  const handleInputChange = (field, value) => {
-    dispatch(updateField({ field, value }));
-  };
-
-  const handleQuantityChange = (change) => {
-    const newQuantity = tableData.quantity + change;
-    if (newQuantity > 0) {
-      handleInputChange("quantity", newQuantity);
-    }
-  };
+  if (!selectedProduct) {
+    return <div>Please select a product.</div>;
+  }
 
   return (
-    <div className="sales-form">
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={tableData.name}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Price:</label>
-        <input
-          type="number"
-          value={tableData.price}
-          onChange={(e) => handleInputChange("price", parseFloat(e.target.value))}
-        />
-      </div>
-      <div>
-        <label>Quantity:</label>
-        <Button onClick={() => handleQuantityChange(-1)}>-</Button>
-        <span>{tableData.quantity}</span>
-        <Button onClick={() => handleQuantityChange(1)}>+</Button>
-      </div>
-      <div>
-        <label>Total Tax:</label>
-        <span>{tableData.totalTax.toFixed(2)}</span>
-      </div>
-      <div>
-        <label>Total Price:</label>
-        <span>{tableData.totalPrice.toFixed(2)}</span>
+    <div lkey ={selectedProduct?.id}className ="sales-form">
+      <table className="sales-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Quantity</th>
+            <th>Total Tax</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr key={productData.id}>
+            <td>{productData.name}</td>
+            <td>{productData.amount.toFixed(2)}</td>
+            <td>
+              <div className="quantity-counter">
+                <button
+                  onClick={() =>
+                    handleQuantityChange(productData.id, Math.max(productData.quantity - 1, 1))
+                  }
+                >
+                  -
+                </button>
+                <span>{productData.quantity}</span>
+                <button
+                  onClick={() =>
+                    handleQuantityChange(productData.id, productData.quantity + 1)
+                  }
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td>{productData.tax.toFixed(2)}</td>
+            <td>{productData.totalPrice.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="totals">
+        <p>Total Tax: {productData.tax.toFixed(2)}</p>
+        <p>Total Price: {productData.totalPrice.toFixed(2)}</p>
       </div>
     </div>
   );

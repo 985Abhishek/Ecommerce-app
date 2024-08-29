@@ -1,9 +1,10 @@
 // src/features/apiDataSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { thunk } from 'redux-thunk';
 
 // Define the async thunk for the API call
 export const fetchDataFromLocalStorage = createAsyncThunk('apiData/fetchDataFromLocalSotrage', async () => {
-    const storedData = localStorage.getItem('products'); // Replace 'myData' with your key
+    const storedData = localStorage.getItem('taxes'); // Replace 'myData' with your key
     if (storedData) {
       return JSON.parse(storedData);
     } else {
