@@ -177,7 +177,7 @@ dispatch(setProduct(storedProducts))
   position="top-center"
   reverseOrder={false}
 /> */}
-      <Button variant="contained" color="primary" onClick={() => handleOpenDialog(null)}>
+      <Button variant="contained" color="primary" style={{backgroundColor: "black", marginBottom:"20px", marginLeft: "600px"}} onClick={() => handleOpenDialog(null)}>
         Add Product
       </Button>
 

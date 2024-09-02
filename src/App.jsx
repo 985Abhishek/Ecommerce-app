@@ -9,6 +9,7 @@ import { Bounce, ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 import SalesPage from "./pages/SalesPage";
 import { useDispatch } from "react-redux";
+import ShowSalesPage from "./pages/ShowSalesPage";
 
 
 
@@ -29,6 +30,7 @@ function App() {
          
           <Route path="/product" element={<ProductPage />} />
           <Route path="/sale" element={<SalesPage />} />
+          <Route path="/showsale" element={<ShowSalesPage />} />
          
           <Route path="*" element={<CategoryPage />} />
         </Routes>

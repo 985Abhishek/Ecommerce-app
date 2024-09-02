@@ -41,3 +41,12 @@
   margin-top: 20px;
   font-weight: bold;
 }
+
+.submit button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 600px;
+}

@@ -7,34 +7,34 @@ import { fetchDataFromLocalStorage } from '../store/apiDataSlice';
 
 const SalesPage = () => {
   const dispatch = useDispatch();
-
-  // Access data from your localStorage (apiData slice)
+  
   const { data = [], status = 'idle', error = null } = useSelector((state) => state.apiData || {});
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // Fetch data from localStorage when the status is 'idle'
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchDataFromLocalStorage());
     }
   }, [status, dispatch]);
 
-  // Handle product selection from dropdown
   const handleProductSelect = (e) => {
     const productId = e.target.value;
     const product = data.find((product) => product.id === productId);
-    setSelectedProduct(product);
-  };
+    
+    if (product) {
 
-  let content;
-
-  if (status === 'loading') {
-    content = <p>Loading...</p>;
-  } else if (status === 'failed') {
-    content = <p>{error}</p>;
+      const isAlreadySelected = selectedProducts.some(item => item.id === productId);
+      
+      if (!isAlreadySelected) {
+        setSelectedProducts([...selectedProducts, product]);
+      }
+      
+     
+      e.target.value = "";
+    }
   }
-
+  
   return (
     <div className="sales">
       <h1>Sales Page</h1>
@@ -44,7 +44,7 @@ const SalesPage = () => {
         <Select
           labelId="product-select-label"
           id="product-select"
-          value={selectedProduct?.id || ''}
+          value=""
           onChange={handleProductSelect}
         >
           {data.map((item) => (
@@ -55,8 +55,8 @@ const SalesPage = () => {
         </Select>
       </FormControl>
 
-      {selectedProduct ? (
-        <SalesForm selectedProduct={selectedProduct} />
+      {selectedProducts.length > 0 ? (
+        <SalesForm selectedProducts={selectedProducts} />
       ) : (
         <p>Please select a product to view details.</p>
       )}

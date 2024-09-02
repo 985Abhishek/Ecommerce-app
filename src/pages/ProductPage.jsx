@@ -7,7 +7,8 @@ const ProductPage = () => {
       <div className = "productpage">
      <center >Products</center>
      </div>
-      <ProductForm />
+     <ProductForm />
+     
     </div>
   )
 }

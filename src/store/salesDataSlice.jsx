@@ -26,6 +26,7 @@ export const salesDataSlice = createSlice({
       state.totalTax = state.tableData.reduce((acc, item) => acc + item.totalTax, 0);
       state.totalPrice = state.tableData.reduce((acc, item) => acc + item.totalPrice, 0);
     },
+   
   },
 });
 

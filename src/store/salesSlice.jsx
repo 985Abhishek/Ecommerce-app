@@ -28,8 +28,14 @@ state.tableData =[action.payload]
         state.totalPrice = state.tableData.reduce((acc, item) => acc + item.totalPrice, 0);
       });
     },
+    setSales : (state, action)=> {
+      state.tableData = action.payload
+    },
+    clearSales: (state)=> {
+      state.tableData = []
+    }
   },
 });
 
-export const {setInitialData, updateQuantity, calculateTotals } = salesSlice.actions;
+export const {setInitialData, updateQuantity, calculateTotals, setSales, clearSales } = salesSlice.actions;
 export default salesSlice.reducer;

@@ -1,3 +1,4 @@
+//for category
 export const loadCategories = () => {
     try {
       const serializedData = localStorage.getItem('categories');
@@ -17,13 +18,14 @@ export const loadCategories = () => {
     }
   };
 
+  // for taxes comp
   export const loadTaxes = ()=>{
     try{
-      const serializedState = localStorage.getItem('taxes');
-      if(serializedState === null) {
+      const serializedSales = localStorage.getItem('taxes');
+      if(serializedSales === null) {
         return[]
       }
-      return JSON.parse(serializedState)
+      return JSON.parse(serializedSales)
     }catch (err) {
       console.log("error in loadtaxes")
       return [];
@@ -32,21 +34,21 @@ export const loadCategories = () => {
 
   export const saveTaxes = (taxes) => {
     try {
-      const serializedState = JSON.stringify(taxes)
-      localStorage.setItem('taxes', serializedState)
+      const serializedSales = JSON.stringify(taxes)
+      localStorage.setItem('taxes', serializedSales)
     } catch (err) {
       console.log('error in the savetaxes');
       
     }
   }
-  
+  // for products
   export const loadProducts = ()=>{
     try{
-      const serializedState = localStorage.getItem('products');
-      if(serializedState === null) {
+      const serializedSales = localStorage.getItem('products');
+      if(serializedSales === null) {
         return[]
       }
-      return JSON.parse(serializedState)
+      return JSON.parse(serializedSales)
     }catch (err) {
       console.log("error in loadproducts")
       return [];
@@ -55,21 +57,22 @@ export const loadCategories = () => {
 
   export const saveProducts = (products) => {
     try {
-      const serializedState = JSON.stringify(products)
-      localStorage.setItem('products', serializedState)
+      const serializedSales = JSON.stringify(products)
+      localStorage.setItem('products', serializedSales)
     } catch (err) {
       console.log('error in the saveproducts');
       
     }
   }
 
+  // for sales
   export const loadSales = ()=> {
     try{
-      const serializedState = localStorage.getItem('sales')
-      if(serializedState===null) {
+      const serializedSales = localStorage.getItem('sales')
+      if(serializedSales===null) {
         return []
       }
-      return JSON.parse(serializedState)
+      return JSON.parse(serializedSales)
     }catch (err) {
       console.log("error in loadingSales");
       return [];
@@ -77,11 +80,39 @@ export const loadCategories = () => {
   };
   export const saveSales = (sales) => {
     try {
-      const serializedState = JSON.stringify(sales)
-      localStorage.setItem('sales', serializedState)
+      const serializedSales = JSON.stringify(sales)
+      localStorage.setItem('sales', serializedSales)
     } catch (err) {
       console.log('error in the saveSales');
 
     }
   }
+
+  // for showing sales
+
+  export const loadShowSales = ()=>{
+    try{
+      const serializedShowSales = localStorage.getItem('sales')
+if(serializedShowSales===null) {
+  return []
+}
+return JSON.parse(serializedShowSales)
+  }catch (err) {
+    console.log('error in loading ShowSales');
+    return []
+  }  
+  }
+
+  export const saveShowSales = (sales) => {
+    try{
+      const serializedShowSales = JSON.stringify(sales)
+      localStorage.setItem('sales', serializedShowSales)
+    } catch (err) {
+      console.log("error in the saveShowSales");
+      
+    }
+
+  }
+  
+  
   
