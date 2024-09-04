@@ -9,32 +9,31 @@ import { loadSalesList } from "../../utils/localSotrage";
 const SalesForm = ({ selectedProducts }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-const salesList = useSelector((state)=> state.salesList.salesList)
+  const salesList = useSelector((state) => state.salesList.salesList);
   const [productData, setProductData] = useState([]);
-  const [selectedProduct, setSelectedproduct] = useState([]);
+  // const [selectedProduct, setSelectedproduct] = useState([]);
 
   useEffect(() => {
-  
     dispatch(setSalesList(salesList));
   }, [dispatch]);
-
-  
 
   useEffect(() => {
     const newProducts = selectedProducts.map((product) => ({
       id: product.id,
       name: product.name,
-      quantity: 1,
-      amount: product.Amount || 3700 ,
-      tax: (product.Amount || 3700 ) * 0.1,
+      quantity: 0,
+      amount: product.Amount || 3700,
+      tax: (product.Amount || 3700) * 0.1,
       totalPrice: (product.Amount || 3700) * 1.1,
     }));
     setProductData(newProducts);
   }, [selectedProducts]);
 
+  console.log(
+    selectedProducts,
+    
+  );
 
-console.log(selectedProducts, "SelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProducts");
- 
   const handleQuantityChange = (id, newQuantity) => {
     setProductData((prevData) =>
       prevData.map((item) =>
@@ -66,10 +65,8 @@ console.log(selectedProducts, "SelectedProductsSelectedProductsSelectedProductsS
       totalPrice,
     };
 
-    // Dispatch the new sale to be added to the sales list
+    
     dispatch(addSalesList(newSale));
-
-    // Navigate to ShowSales page
     navigate("/showsale");
   };
 
@@ -144,4 +141,3 @@ console.log(selectedProducts, "SelectedProductsSelectedProductsSelectedProductsS
 };
 
 export default SalesForm;
-
