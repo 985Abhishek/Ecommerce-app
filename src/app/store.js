@@ -9,6 +9,7 @@ import apiDataReducer from "../store/apiDataSlice";
 import salesSliceReducer from "../store/salesDataSlice";
 import selectionSliceReducer from "../store/selectionSlice";
 import salesDataReducer from "../store/salesDataApi";
+import salesListReducer from "../store/salesListSlice";
 import { thunk } from "redux-thunk";
 
 export const store = configureStore({
@@ -24,7 +25,8 @@ export const store = configureStore({
     sales: salesSliceReducer,
     select: selectionSliceReducer,
     middleWare: [thunk],
-    salesData : salesDataReducer
+    salesData : salesDataReducer,
+    salesList : salesListReducer
   },
 });
 

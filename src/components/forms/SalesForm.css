@@ -50,3 +50,10 @@
   cursor: pointer;
   margin-left: 600px;
 }
+
+.Add-button {
+  background-color: #4CAF50;
+  margin-top: 30px;
+  width : 140px
+
+}

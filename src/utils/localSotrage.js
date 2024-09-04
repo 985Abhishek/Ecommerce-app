@@ -67,24 +67,33 @@ export const loadCategories = () => {
 
   // for sales
   export const loadSales = ()=> {
-    try{
-      const serializedSales = localStorage.getItem('sales')
-      if(serializedSales===null) {
-        return []
+    // try{
+    //   const serializedSales = localStorage.getItem('sales')
+    //   if(serializedSales===null) {
+    //     return []
+    //   }
+    //   return JSON.parse(serializedSales)
+    // }catch (err) {
+    //   console.log("error in loadingSales");
+    //   return [];
+    // }
+    
+      try {
+        const serializedData = localStorage.getItem("sales");
+        return serializedData ? JSON.parse(serializedData) : [];
+      } catch (err) {
+        console.error("Error loading sales data from localStorage:", err);
+        return [];
       }
-      return JSON.parse(serializedSales)
-    }catch (err) {
-      console.log("error in loadingSales");
-      return [];
-    }
-  };
+    };
+  
   export const saveSales = (sales) => {
     try {
       const serializedSales = JSON.stringify(sales)
       localStorage.setItem('sales', serializedSales)
     } catch (err) {
       console.log('error in the saveSales');
-
+return [];
     }
   }
 
@@ -112,6 +121,29 @@ return JSON.parse(serializedShowSales)
       
     }
 
+  }
+
+  //save sales list to localstorage 
+
+  export const saveSaleList = (salesList) => {
+    try {
+      const serializedData = JSON.stringify(salesList)
+      localStorage.setItem("salesList", serializedData)
+    } catch (err)
+ {
+  console.log("Error saving sales list to localStorage:", err)
+ };
+  };
+
+  export const loadSalesList = () => {
+    try {
+      const serializedData = localStorage.getItem('salesList');
+      return serializedData ? JSON.parse(serializedData) : []
+    } catch (err) {
+      console.log("error in the savelistSales");
+            return [];
+      
+    }
   }
   
   

@@ -1,40 +1,40 @@
-
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import "./SalesForm.css";
-import { saveSales, loadSales } from "../../utils/localSotrage";
-import { setSales } from "../../store/salesSlice";
 import { Button } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
-import { nanoid } from 'nanoid';
-
+import { useNavigate } from "react-router-dom";
+import { addSalesList, setSalesList } from "../../store/salesListSlice";
+import { loadSalesList } from "../../utils/localSotrage";
 
 const SalesForm = ({ selectedProducts }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const tableData = useSelector((state) => state.sales.tableData);
+const salesList = useSelector((state)=> state.salesList.salesList)
   const [productData, setProductData] = useState([]);
+  const [selectedProduct, setSelectedproduct] = useState([]);
 
   useEffect(() => {
-    const storedSales = loadSales();
-    if (storedSales.length > 0) {
-      dispatch(setSales(storedSales));
-    }
+  
+    dispatch(setSalesList(salesList));
   }, [dispatch]);
+
+  
 
   useEffect(() => {
     const newProducts = selectedProducts.map((product) => ({
       id: product.id,
       name: product.name,
       quantity: 1,
-      amount: product.Amount || 2500,
-      tax: (product.Amount || 2500) * 0.10,
-      totalPrice: (product.Amount || 2500) + (product.Amount || 2500) * 0.10,
+      amount: product.Amount || 3700 ,
+      tax: (product.Amount || 3700 ) * 0.1,
+      totalPrice: (product.Amount || 3700) * 1.1,
     }));
     setProductData(newProducts);
   }, [selectedProducts]);
 
+
+console.log(selectedProducts, "SelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProductsSelectedProducts");
+ 
   const handleQuantityChange = (id, newQuantity) => {
     setProductData((prevData) =>
       prevData.map((item) =>
@@ -42,8 +42,9 @@ const SalesForm = ({ selectedProducts }) => {
           ? {
               ...item,
               quantity: newQuantity,
-              tax: item.amount * 0.10 * newQuantity,
-              totalPrice: item.amount * newQuantity + item.amount * 0.10 * newQuantity,
+              tax: item.amount * 0.1 * newQuantity,
+              totalPrice:
+                item.amount * newQuantity + item.amount * 0.1 * newQuantity,
             }
           : item
       )
@@ -51,26 +52,25 @@ const SalesForm = ({ selectedProducts }) => {
   };
 
   const navigateToShowSales = () => {
-    const invoice =Date.now();
+    const invoice = Date.now();
     const totalTax = productData.reduce((acc, item) => acc + item.tax, 0);
-    const totalPrice = productData.reduce((acc, item) => acc + item.totalPrice, 0);
+    const totalPrice = productData.reduce(
+      (acc, item) => acc + item.totalPrice,
+      0
+    );
 
     const newSale = {
       invoice,
       numberOfProducts: productData.length,
       totalTax,
-      totalPrice
+      totalPrice,
     };
 
-    console.log("New Sale Data:", newSale); // Debug log
+    // Dispatch the new sale to be added to the sales list
+    dispatch(addSalesList(newSale));
 
-    const updatedSales = [...tableData, newSale];
-    dispatch(setSales(updatedSales));
-    saveSales(updatedSales);
-
-    console.log("Updated Sales Data:", updatedSales); // Debug log
-
-    navigate('/showsale');
+    // Navigate to ShowSales page
+    navigate("/showsale");
   };
 
   if (productData.length === 0) {
@@ -98,7 +98,10 @@ const SalesForm = ({ selectedProducts }) => {
                 <div className="quantity-counter">
                   <button
                     onClick={() =>
-                      handleQuantityChange(item.id, Math.max(item.quantity - 1, 1))
+                      handleQuantityChange(
+                        item.id,
+                        Math.max(item.quantity - 1, 1)
+                      )
                     }
                   >
                     -
@@ -120,11 +123,21 @@ const SalesForm = ({ selectedProducts }) => {
         </tbody>
       </table>
       <div className="totals">
-        <p>Total Tax: {productData.reduce((acc, item) => acc + item.tax, 0).toFixed(2)}</p>
-        <p>Total Price: {productData.reduce((acc, item) => acc + item.totalPrice, 0).toFixed(2)}</p>
+        <p>
+          Total Tax:{" "}
+          {productData.reduce((acc, item) => acc + item.tax, 0).toFixed(2)}
+        </p>
+        <p>
+          Total Price:{" "}
+          {productData
+            .reduce((acc, item) => acc + item.totalPrice, 0)
+            .toFixed(2)}
+        </p>
       </div>
       <div className="submit-button">
-        <Button onClick={navigateToShowSales} variant="contained">Submit</Button>
+        <Button onClick={navigateToShowSales} variant="contained">
+          Submit
+        </Button>
       </div>
     </div>
   );

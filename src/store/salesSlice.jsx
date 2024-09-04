@@ -23,19 +23,23 @@ state.tableData =[action.payload]
       }
     },
     calculateTotals: (state) => {
-      state.tableData.forEach((item) => {
+      state.tableData.forEach(() => {
         state.totalTax = state.tableData.reduce((acc, item) => acc + item.totalTax, 0);
         state.totalPrice = state.tableData.reduce((acc, item) => acc + item.totalPrice, 0);
       });
     },
     setSales : (state, action)=> {
-      state.tableData = action.payload
+      state.tableData = [action.payload]
+      //state.tableData = [...state.tableData, ...action.payload]
+    },
+    saveSale : (state, action)=> {
+      state.tableData =  [...state.tableData, ...action.payload]
     },
     clearSales: (state)=> {
       state.tableData = []
-    }
+    },
   },
 });
 
-export const {setInitialData, updateQuantity, calculateTotals, setSales, clearSales } = salesSlice.actions;
+export const {setInitialData, updateQuantity, calculateTotals, setSales, clearSales, saveSale} = salesSlice.actions;
 export default salesSlice.reducer;
