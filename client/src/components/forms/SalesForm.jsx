@@ -65,8 +65,8 @@ const SalesForm = ({ selectedProducts }) => {
         alert(
           `Payment successful! Payment ID: ${response.razorpay_payment_id}`
         );
+        navigateToShowSales();
       },
-
       notes: {
         address: "Razorpay Corporate Office",
       },
@@ -75,12 +75,15 @@ const SalesForm = ({ selectedProducts }) => {
         email: "customer@example.com",
         contact: "8264101671",
       },
+      modal: {
+        ondismiss: () => {
+          navigateToShowSales(); 
+        },
+      },
     };
 
     const razorpay = new window.Razorpay(options);
-    razorpay.open().then(() => {
-      navigateToShowSales();
-    });
+    razorpay.open()
   };
 
   const navigateToShowSales = () => {

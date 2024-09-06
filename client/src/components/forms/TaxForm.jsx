@@ -148,9 +148,9 @@ const TaxForm = () => {
   const handleTaxCaluclation = (amount, taxType) => {
     let taxedAmount = 0;
     if (taxType === "Percentage") {
-      taxedAmount = parseFloat(amount) + parseFloat(amount) * 0.05; // Assuming 5% tax
+      taxedAmount = parseFloat(amount) + parseFloat(amount) * 0.01; // Assuming 5% tax
     } else if (taxType === "Fixed") {
-      taxedAmount = parseFloat(amount) + parseFloat(amount) * 0.05; // Assuming a fixed tax of 5 units
+      taxedAmount = parseFloat(amount) + parseFloat(amount) + 10; // Assuming a fixed tax of 5 units
     }
     
     return taxedAmount.toFixed(2); 

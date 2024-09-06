@@ -76,7 +76,6 @@ const ShowSales = () => {
           </Button>
         </center>
       </div>
-      <Button style={{backgroundColor: "#24a0ed ", color: "white" , marginTop:"10px" ,fontSize: "10px"}} onClick ={navigateToPayment}>Paynow</Button>
     </div>
   );
 };
