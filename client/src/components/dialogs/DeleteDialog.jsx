@@ -28,8 +28,6 @@ open,
             Confirm
           </Button>
         </DialogActions>
-        {/*         jjfdj
-         */}{" "}
       </Dialog>
     </div>
   );

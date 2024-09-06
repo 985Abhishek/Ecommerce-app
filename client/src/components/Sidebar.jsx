@@ -6,7 +6,7 @@ const Sidebar = () => {
   return (
     
 
-    <div className="sidebar">
+    <div className="navbar">
       <ul>
         <li>
           <Link to="/category">Category</Link>

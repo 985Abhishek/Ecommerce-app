@@ -1,20 +1,21 @@
-
+.form-container {
+  color:chartreuse;
+  background-color:darkmagenta;
+}
 .tax-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  height: 100%;
-  margin-left: 1px;
-
-
-  
+border-collapse: collapse;
+margin-left:100px;
+margin-top:30px;
 }
 
-.tax-table th,
+.tax-table th{
+  color:rgb(0, 0, 0);
+  text-align: center;
+}
 .tax-table td {
   padding: 1px;
   border: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
 }
 
 .tax-table th {
@@ -50,7 +51,7 @@
   border: none;
   text-align: left;
   cursor: pointer;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .dropdown-content button:hover {
@@ -59,8 +60,8 @@
 
 .form-controls {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 100px;
+  margin-top: 0px;
 }
 
 .form-controls input,
@@ -69,7 +70,7 @@
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  width: 200px;
+  /* width: 200px; */
 }
 
 .form-controls button {
@@ -88,9 +89,10 @@
 
 .add-tax-button {
   position: absolute;
-  top: 15%;
-  margin-left: 690px;
-  width:90px;
+  top: 18%;
+  left:67.9%;
+  
+  /* width:90px; */
   margin-top: 1px;
   background-color: #4caf50;
   color: #fff;

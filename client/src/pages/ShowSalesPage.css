@@ -1,6 +1,6 @@
 .showsales {
-    margin-top: 100px;
-    margin-left: 600px;
+   margin-left: 420px;
+   width: 100%
  
    
 
@@ -8,8 +8,10 @@
 }
 h1{
 font-size: 40px;
-color: rgb(182, 19, 19);
-margin-left: 170px;
+color: rgb(4, 73, 60);
+margin-top: 100px;
+margin-left: 420px;
+
 
 }
 

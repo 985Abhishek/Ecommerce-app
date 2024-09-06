@@ -1,17 +1,10 @@
 .form-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-left: 850px;
-  width: 150%;
-  height:100%;
 }
 
 .category-table {
-  width: 100%;
   border-collapse: collapse;
 }
 
@@ -85,5 +78,5 @@
 }
 
 .form-controls button:hover {
-  background-color: #3e8e41;
+  background-color: #1e0354;
 }

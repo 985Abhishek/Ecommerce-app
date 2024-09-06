@@ -5,10 +5,7 @@ import "./TaxPage.css";
 const TaxPage = () => {
   return (
     <div className="taxPage">
-      <div className="heading">
-        Manage Tax
-      </div>
-
+     <h1 style={{marginLeft:"65%"}}>Manage Tax</h1> 
       <TaxForm />
     </div>
   );
